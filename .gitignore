@@ -1,0 +1,32 @@
+# 환경변수 / 키
+.env
+*.key
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# 데이터 (용량이 크고 원본은 다시 받을 수 있으므로 기본적으로 제외)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# 결과 (카테고리 26, PII, 명예훼손 등 민감할 수 있는 실제 프롬프트/응답 원문 포함)
+results/phase1_rules/*
+results/phase2_responses/*
+results/phase3_scores/*
+!results/phase1_rules/.gitkeep
+!results/phase2_responses/.gitkeep
+!results/phase3_scores/.gitkeep
+
+# 로그
+logs/*
+!logs/.gitkeep
+
+# OS / 에디터
+.DS_Store
+.vscode/settings.json

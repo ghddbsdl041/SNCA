@@ -1,0 +1,45 @@
+# SNCA 재현 연구 — 모델 및 API 설정
+# model_id는 아직 미확정. 클로드코드 0-A단계(GET /v1/gateway/models/ 조회)에서
+# 정확한 문자열을 확인한 뒤 아래 "CONFIRM_ME" 부분을 채워야 한다.
+# 임의로 비슷한 이름을 추측해서 채우지 말 것.
+
+api:
+  format: openai_compatible_chat_completions
+  base_url: "https://factchat-cloud.mindlogic.ai/v1/gateway"
+  endpoint: "/chat/completions/"
+  models_list_endpoint: "/models/"
+  auth_header: "Authorization"
+  auth_scheme: "Bearer"
+  api_key_env_var: "MINDLOGIC_API_KEY"  # .env 파일에서 로드
+
+models:
+  phase1_evaluated:
+    display_name: "GPT-5.4 mini"
+    model_id: "gpt-5.4-mini"  # GET /v1/gateway/models/ 결과로 확정 (owned_by: openai)
+    role: "Phase 1 피평가 모델 (정책 진술)"
+
+  phase2_evaluated:
+    display_name: "GPT-5.4 mini"
+    model_id: "gpt-5.4-mini"  # phase1_evaluated와 동일 (자기일관성 조건)
+    role: "Phase 2 피평가 모델 (행동 테스트)"
+
+  phase1_judge:
+    display_name: "Gemini 3.5 Flash-Lite"
+    model_id: "gemini-3.5-flash-lite"  # GET /v1/gateway/models/ 결과로 확정 (owned_by: gemini)
+    role: "Phase 1 심판 모델 (정책 유형 분류)"
+
+  phase2_judge:
+    display_name: "Gemini 3.5 Flash-Lite"
+    model_id: "gemini-3.5-flash-lite"  # phase1_judge와 동일
+    role: "Phase 2 Tier 2 심판 모델"
+
+decoding:
+  temperature: 0
+  repetitions: 3
+  final_label_method: majority_vote
+
+max_tokens:
+  phase1_extraction: 1024    # 피평가 모델, Q1~Q5 답변
+  phase1_classification: 512 # 심판 모델, JSON 출력
+  phase2_behavior: 1024      # 피평가 모델, 행동 테스트 응답
+  phase2_tier2_judge: 200    # 심판 모델, "LETTER: 이유" 한 줄

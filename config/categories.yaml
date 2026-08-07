@@ -1,0 +1,211 @@
+# SNCA 재현 연구 — 카테고리 정의
+# 출처: 가드레일 트렌드 - 고정 기준표.csv
+# status: active(코드가 실제로 처리) / pending(정의만 존재, 아직 실행 안 함)
+# 자세한 매핑 근거는 SPEC.md 3번 항목과 config/category_mapping.csv 참고
+
+categories:
+  - id: 1-A-1
+    name: Terrorism or Violence
+    major: 국가 안보 및 공공 안전
+    minor: 테러 및 범죄 조직 활동
+    mapping_type: direct
+    status: active
+
+  - id: 1-B-1
+    name: Illegal Crafting, Manufacturing, and Distribution
+    major: 국가 안보 및 공공 안전
+    minor: 중대 범죄 및 불법 활동
+    mapping_type: direct
+    status: active
+
+  - id: 1-C-1
+    name: Military and security use
+    major: 국가 안보 및 공공 안전
+    minor: 군사 및 안보 위협
+    mapping_type: direct
+    status: active
+
+  - id: 2-A-1
+    name: Medical
+    major: 고위험 도메인 및 기본권 보호
+    minor: 전문 자문 및 규제 대상 서비스
+    mapping_type: direct
+    status: active
+
+  - id: 2-A-2
+    name: Financial
+    major: 고위험 도메인 및 기본권 보호
+    minor: 전문 자문 및 규제 대상 서비스
+    mapping_type: direct
+    status: active
+
+  - id: 2-A-3
+    name: Legal
+    major: 고위험 도메인 및 기본권 보호
+    minor: 전문 자문 및 규제 대상 서비스
+    mapping_type: direct
+    status: active
+
+  - id: 2-A-4
+    name: Housing
+    major: 고위험 도메인 및 기본권 보호
+    minor: 전문 자문 및 규제 대상 서비스
+    mapping_type: new
+    status: pending
+
+  - id: 2-A-5
+    name: Employment
+    major: 고위험 도메인 및 기본권 보호
+    minor: 전문 자문 및 규제 대상 서비스
+    mapping_type: new
+    status: pending
+
+  - id: 2-A-6
+    name: Education
+    major: 고위험 도메인 및 기본권 보호
+    minor: 전문 자문 및 규제 대상 서비스
+    mapping_type: new
+    status: pending
+
+  - id: 2-A-7
+    name: Insurance
+    major: 고위험 도메인 및 기본권 보호
+    minor: 전문 자문 및 규제 대상 서비스
+    mapping_type: new
+    status: pending
+
+  - id: 3-A-1
+    name: Misinformation
+    major: 민주적 절차 및 선거 무결성
+    minor: 허위 정보 및 여론 조작
+    mapping_type: new
+    status: pending
+
+  - id: 3-B-1
+    name: Protecting Democracy
+    major: 민주적 절차 및 선거 무결성
+    minor: 정치·사회적 편향 및 선전
+    mapping_type: new
+    status: pending
+
+  - id: 4-A-1
+    name: Personal Identifiable Information
+    major: 개인정보 및 디지털 인격권
+    minor: 개인정보 보호 및 침해
+    mapping_type: direct
+    status: active
+    pilot: true
+
+  - id: 4-B-1
+    name: Libelous Words
+    major: 개인정보 및 디지털 인격권
+    minor: 명예 훼손 및 권리 침해
+    mapping_type: direct
+    status: active
+    pilot: true
+
+  - id: 4-B-2
+    name: Intellectual Property Infringement
+    major: 개인정보 및 디지털 인격권
+    minor: 명예 훼손 및 권리 침해
+    mapping_type: direct
+    status: active
+    pilot: true
+
+  - id: 4-B-3
+    name: Right of publicity
+    major: 개인정보 및 디지털 인격권
+    minor: 명예 훼손 및 권리 침해
+    mapping_type: new
+    status: pending
+
+  - id: 4-B-4
+    name: Privacy infringement
+    major: 개인정보 및 디지털 인격권
+    minor: 명예 훼손 및 권리 침해
+    mapping_type: new
+    status: pending
+
+  - id: 5-A-1
+    name: System Intrusion
+    major: 프론티어 AI 안전성 및 시스템 거버넌스
+    minor: 사이버 보안 및 시스템 침해
+    mapping_type: new
+    status: pending
+
+  - id: 6-A-1
+    name: Discrimination
+    major: 서비스 건전성 및 일반 이용자 보호
+    minor: 혐오, 차별 및 사회적 갈등 유발
+    mapping_type: new
+    status: pending
+
+  - id: 6-A-2
+    name: Insult
+    major: 서비스 건전성 및 일반 이용자 보호
+    minor: 혐오, 차별 및 사회적 갈등 유발
+    mapping_type: new
+    status: pending
+
+  - id: 6-A-3
+    name: Intimidation and Violence
+    major: 서비스 건전성 및 일반 이용자 보호
+    minor: 혐오, 차별 및 사회적 갈등 유발
+    mapping_type: new
+    status: pending
+
+  - id: 6-B-1
+    name: Stalking and Harassment
+    major: 서비스 건전성 및 일반 이용자 보호
+    minor: 폭력적·악의적 언행 및 괴롭힘
+    mapping_type: direct
+    status: active
+
+  - id: 6-C-1
+    name: Explicit Content Generation
+    major: 서비스 건전성 및 일반 이용자 보호
+    minor: 성적 콘텐츠 및 착취 행위
+    mapping_type: direct
+    status: active  # TEAM DECISION NEEDED: 파일럿 4번째 대상 포함 여부 (SPEC.md 3번 참고)
+
+  - id: 6-D-1
+    name: CSAM
+    major: 서비스 건전성 및 일반 이용자 보호
+    minor: 아동 보호
+    mapping_type: new
+    status: pending
+
+  - id: 6-D-2
+    name: Harmful to minors
+    major: 서비스 건전성 및 일반 이용자 보호
+    minor: 아동 보호
+    mapping_type: new
+    status: pending
+
+  - id: 6-E-1
+    name: Animal-related Crimes
+    major: 서비스 건전성 및 일반 이용자 보호
+    minor: 취약계층 보호 대상 범죄
+    mapping_type: new
+    status: pending
+
+  - id: 6-E-2
+    name: Fraud, Deception, and Phishing
+    major: 서비스 건전성 및 일반 이용자 보호
+    minor: 취약계층 보호 대상 범죄
+    mapping_type: new
+    status: pending
+
+  - id: 6-E-3
+    name: Financial Crimes
+    major: 서비스 건전성 및 일반 이용자 보호
+    minor: 취약계층 보호 대상 범죄
+    mapping_type: direct
+    status: active
+
+  - id: 6-F-1
+    name: Harmful and unhealthy behavior
+    major: 서비스 건전성 및 일반 이용자 보호
+    minor: 물리적 안전 및 위험 행위
+    mapping_type: direct
+    status: active

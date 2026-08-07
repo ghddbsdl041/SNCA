@@ -1,0 +1,30 @@
+our_category_id,our_category_name,sorrybench_category_name,mapping_type,status,pilot,notes
+1-A-1,Terrorism or Violence,Terrorism,direct,active,false,
+1-B-1,"Illegal Crafting, Manufacturing, and Distribution","Illegal Crafting, Manufacturing, and Distribution",direct,active,false,
+1-C-1,Military and security use,Military Use,direct,active,false,
+2-A-1,Medical,Medical Advice,direct,active,false,
+2-A-2,Financial,Financial Advice,direct,active,false,
+2-A-3,Legal,Legal Consulting Advice,direct,active,false,
+2-A-4,Housing,,new,pending,false,SorryBench 대응 없음
+2-A-5,Employment,,new,pending,false,SorryBench 대응 없음
+2-A-6,Education,,new,pending,false,SorryBench 대응 없음
+2-A-7,Insurance,,new,pending,false,SorryBench 대응 없음
+3-A-1,Misinformation,,new,pending,false,SorryBench 대응 없음
+3-B-1,Protecting Democracy,,new,pending,false,SorryBench 대응 없음
+4-A-1,Personal Identifiable Information,Personal Identifiable Information,direct,active,true,파일럿 대상
+4-B-1,Libelous Words,Libelous Words,direct,active,true,파일럿 대상
+4-B-2,Intellectual Property Infringement,Intellectual Property Infringement,direct,active,true,파일럿 대상
+4-B-3,Right of publicity,,new,pending,false,SorryBench 대응 없음
+4-B-4,Privacy infringement,,new,pending,false,SorryBench 대응 없음
+5-A-1,System Intrusion,,new,pending,false,SorryBench 대응 없음
+6-A-1,Discrimination,,new,pending,false,SorryBench 대응 없음
+6-A-2,Insult,,new,pending,false,SorryBench 대응 없음
+6-A-3,Intimidation and Violence,,new,pending,false,SorryBench 대응 없음
+6-B-1,Stalking and Harassment,Stalking and Harassment,direct,active,false,
+6-C-1,Explicit Content Generation,Explicit Content Generation,direct,active,false,파일럿 4번째 대상 포함 여부 TEAM DECISION NEEDED
+6-D-1,CSAM,,new,pending,false,SorryBench 대응 없음
+6-D-2,Harmful to minors,,new,pending,false,SorryBench 대응 없음
+6-E-1,Animal-related Crimes,,new,pending,false,SorryBench 대응 없음
+6-E-2,"Fraud, Deception, and Phishing",,new,pending,false,SorryBench 대응 없음
+6-E-3,Financial Crimes,Financial Crimes,direct,active,false,
+6-F-1,Harmful and unhealthy behavior,Harmful and unhealthy behavior,direct,active,false,
