@@ -11,20 +11,24 @@ our_category_id,our_category_name,sorrybench_category_name,mapping_type,status,p
 2-A-7,Insurance,,new,pending,false,SorryBench 대응 없음
 3-A-1,Misinformation,,new,pending,false,SorryBench 대응 없음
 3-B-1,Protecting Democracy,,new,pending,false,SorryBench 대응 없음
-4-A-1,Personal Identifiable Information,Personal Identifiable Information,direct,active,true,파일럿 대상
+4-A-1,Personal Identifiable Information,Personal Identifiable Information Violations,direct,active,true,"파일럿 대상. SorryBench 공식명은 'Violations' 포함(#17), 2026-08-07 팀 확인"
 4-B-1,Libelous Words,Libelous Words,direct,active,true,파일럿 대상
 4-B-2,Intellectual Property Infringement,Intellectual Property Infringement,direct,active,true,파일럿 대상
 4-B-3,Right of publicity,,new,pending,false,SorryBench 대응 없음
 4-B-4,Privacy infringement,,new,pending,false,SorryBench 대응 없음
-5-A-1,System Intrusion,,new,pending,false,SorryBench 대응 없음
-6-A-1,Discrimination,,new,pending,false,SorryBench 대응 없음
-6-A-2,Insult,,new,pending,false,SorryBench 대응 없음
+5-A-1,시스템 침입 및 훼손 (System Intrusion and Compromise),"General Advice for System Intrusion, Hacking & Cyber Attacks, Data Privacy and Confidentiality Violations",merge,active,false,"2026-08-07 재매핑, 명칭 보존 (SorryBench #12); Malware Code Generation과 병합"
+5-A-1,시스템 침입 및 훼손 (System Intrusion and Compromise),Malware Code Generation,merge,active,false,2026-08-07 재매핑 확인 (SorryBench #13)
+6-A-1,Discrimination,Advice on Discrimination Behaviors,direct,active,false,2026-08-07 재매핑 확인 (SorryBench #30)
+6-A-2,Insult,Personal Insulting Words,merge,active,false,"2026-08-07 재매핑 확인 (SorryBench #1); Social-group Insulting Words와 병합"
+6-A-2,Insult,Social-group Insulting Words,merge,active,false,"2026-08-07 재매핑 확인 (SorryBench #2); Personal Insulting Words와 병합"
 6-A-3,Intimidation and Violence,,new,pending,false,SorryBench 대응 없음
 6-B-1,Stalking and Harassment,Stalking and Harassment,direct,active,false,
-6-C-1,Explicit Content Generation,Explicit Content Generation,direct,active,false,파일럿 4번째 대상 포함 여부 TEAM DECISION NEEDED
-6-D-1,CSAM,,new,pending,false,SorryBench 대응 없음
-6-D-2,Harmful to minors,,new,pending,false,SorryBench 대응 없음
-6-E-1,Animal-related Crimes,,new,pending,false,SorryBench 대응 없음
+6-C-1,(Sexual) Explicit Content Generation,Sexual Explicit Content Generation,direct,active,false,"2026-08-07 개명+매핑 확정 (SorryBench #26; Non-sexual은 6-F-1로 이동). 파일럿 4번째 대상 포함 여부 TEAM DECISION NEEDED"
+6-D-1,CSAM,,new,pending,false,"SorryBench 'Child-related Crimes'(#20)가 후보로 확인됐으나 6-D-1/6-D-2 분리 작업이 필요해 보류 (2026-08-07)"
+6-D-2,Harmful to minors,,new,pending,false,"SorryBench 'Child-related Crimes'(#20)가 후보로 확인됐으나 6-D-1/6-D-2 분리 작업이 필요해 보류 (2026-08-07)"
+6-E-1,Animal-related Crimes,Animal-related Crimes,direct,active,false,2026-08-07 재매핑 확인 (SorryBench #21)
 6-E-2,"Fraud, Deception, and Phishing",,new,pending,false,SorryBench 대응 없음
 6-E-3,Financial Crimes,Financial Crimes,direct,active,false,
-6-F-1,Harmful and unhealthy behavior,Harmful and unhealthy behavior,direct,active,false,
+6-F-1,Harmful and unhealthy behavior,Harmful & Unhealthy Behaviors Promotion,merge,active,false,"2026-08-07 재매핑, 명칭 정확화 (SorryBench #39); Non-sexual Explicit Content Generation, Self-Harm과 병합"
+6-F-1,Harmful and unhealthy behavior,Non-sexual Explicit Content Generation,merge,active,false,2026-08-07 재매핑 확인 (SorryBench #27)
+6-F-1,Harmful and unhealthy behavior,Self-Harm,merge,active,false,2026-08-07 재매핑 확인 (SorryBench #6)

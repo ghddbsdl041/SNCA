@@ -75,12 +75,12 @@
 | 4-B-2 | 〃 | 〃 | 지적재산권 침해 (Intellectual Property Infringement) |
 | 4-B-3 | 〃 | 〃 | 초상권 침해 (Right of publicity) |
 | 4-B-4 | 〃 | 〃 | 사생활 침해 (Privacy infringement) |
-| 5-A-1 | 프론티어 AI 안전성 및 시스템 거버넌스 | 사이버 보안 및 시스템 침해 | 시스템 침입 및 훼손 (System Intrusion) |
+| 5-A-1 | 프론티어 AI 안전성 및 시스템 거버넌스 | 사이버 보안 및 시스템 침해 | 시스템 침입 및 훼손 (System Intrusion and Compromise) |
 | 6-A-1 | 서비스 건전성 및 일반 이용자 보호 | 혐오, 차별 및 사회적 갈등 유발 | 차별 행위 (Discrimination) |
 | 6-A-2 | 〃 | 〃 | 모욕 (Insult) |
 | 6-A-3 | 〃 | 〃 | 협박 및 폭력 (Intimidation and Violence) |
 | 6-B-1 | 〃 | 폭력적·악의적 언행 및 괴롭힘 | 스토킹 및 괴롭힘 (Stalking and Harassment) |
-| 6-C-1 | 〃 | 성적 콘텐츠 및 착취 행위 | (성적) 노골적 콘텐츠 생성 (Explicit Content Generation) |
+| 6-C-1 | 〃 | 성적 콘텐츠 및 착취 행위 | (성적) 노골적 콘텐츠 생성 ((Sexual) Explicit Content Generation) |
 | 6-D-1 | 〃 | 아동 보호 | 아동 성학대 자료 (CSAM) |
 | 6-D-2 | 〃 | 〃 | 미성년자 유해 콘텐츠 노출 (Harmful to minors) |
 | 6-E-1 | 〃 | 취약계층 보호 대상 범죄 | 동물 관련 범죄 (Animal-related Crimes) |
@@ -90,7 +90,7 @@
 
 ---
 
-## 3. 카테고리 매핑 테이블 [확정 — merge/split 없음, direct 13개 · new 16개]
+## 3. 카테고리 매핑 테이블 [확정 — direct 14개 · merge 3개 · new 12개, 2026-08-07 재매핑 갱신]
 
 `config/category_mapping.csv`로 저장될 내용.
 
@@ -115,27 +115,31 @@
 | 2-A-7 | Insurance | — | new | pending | SorryBench 대응 없음 |
 | 3-A-1 | Misinformation | — | new | pending | SorryBench 대응 없음 |
 | 3-B-1 | Protecting Democracy | — | new | pending | SorryBench 대응 없음 |
-| 4-A-1 | Personal Identifiable Information | Personal Identifiable Information | direct | active | **파일럿 대상** |
+| 4-A-1 | Personal Identifiable Information | Personal Identifiable Information Violations | direct | active | **파일럿 대상**. SorryBench 공식명은 'Violations' 포함(#17), 2026-08-07 팀 확인 |
 | 4-B-1 | Libelous Words | Libelous Words | direct | active | **파일럿 대상** |
 | 4-B-2 | Intellectual Property Infringement | Intellectual Property Infringement | direct | active | **파일럿 대상** |
 | 4-B-3 | Right of publicity | — | new | pending | SorryBench 대응 없음 |
 | 4-B-4 | Privacy infringement | — | new | pending | SorryBench 대응 없음 |
-| 5-A-1 | System Intrusion | — | new | pending | SorryBench 대응 없음 |
-| 6-A-1 | Discrimination | — | new | pending | SorryBench 대응 없음 |
-| 6-A-2 | Insult | — | new | pending | SorryBench 대응 없음 |
+| 5-A-1 | 시스템 침입 및 훼손 (System Intrusion and Compromise) | General Advice for System Intrusion, Hacking & Cyber Attacks, Data Privacy and Confidentiality Violations | merge | active | 2026-08-07 재매핑 (SorryBench #12); Malware Code Generation과 병합 |
+| 5-A-1 | 〃 | Malware Code Generation | merge | active | 2026-08-07 재매핑 확인 (SorryBench #13) |
+| 6-A-1 | Discrimination | Advice on Discrimination Behaviors | direct | active | 2026-08-07 재매핑 확인 (SorryBench #30) |
+| 6-A-2 | Insult | Personal Insulting Words | merge | active | 2026-08-07 재매핑 확인 (SorryBench #1); Social-group Insulting Words와 병합 |
+| 6-A-2 | 〃 | Social-group Insulting Words | merge | active | 2026-08-07 재매핑 확인 (SorryBench #2) |
 | 6-A-3 | Intimidation and Violence | — | new | pending | SorryBench 대응 없음 |
 | 6-B-1 | Stalking and Harassment | Stalking and Harassment | direct | active | |
-| 6-C-1 | Explicit Content Generation | Explicit Content Generation | direct | [TEAM DECISION NEEDED — 파일럿 4번째 대상으로 포함할지] | 이전 파일럿 후보(SorryBench 26번)와 동일 카테고리로 확인됨 |
-| 6-D-1 | CSAM | — | new | pending | SorryBench 대응 없음 |
-| 6-D-2 | Harmful to minors | — | new | pending | SorryBench 대응 없음 |
-| 6-E-1 | Animal-related Crimes | — | new | pending | SorryBench 대응 없음 |
+| 6-C-1 | (Sexual) Explicit Content Generation | Sexual Explicit Content Generation | direct | [TEAM DECISION NEEDED — 파일럿 4번째 대상으로 포함할지] | 2026-08-07 개명+매핑 확정 (SorryBench #26); Non-sexual은 6-F-1로 이동 |
+| 6-D-1 | CSAM | — | new | pending | SorryBench 'Child-related Crimes'(#20)가 후보로 확인됐으나 6-D-1/6-D-2 분리 작업 필요해 보류 (2026-08-07) |
+| 6-D-2 | Harmful to minors | — | new | pending | SorryBench 'Child-related Crimes'(#20)가 후보로 확인됐으나 6-D-1/6-D-2 분리 작업 필요해 보류 (2026-08-07) |
+| 6-E-1 | Animal-related Crimes | Animal-related Crimes | direct | active | 2026-08-07 재매핑 확인 (SorryBench #21) |
 | 6-E-2 | Fraud, Deception, and Phishing | — | new | pending | SorryBench 대응 없음 |
 | 6-E-3 | Financial Crimes | Financial Crimes | direct | active | |
-| 6-F-1 | Harmful and unhealthy behavior | Harmful and unhealthy behavior | direct | active | |
+| 6-F-1 | Harmful and unhealthy behavior | Harmful & Unhealthy Behaviors Promotion | merge | active | 2026-08-07 재매핑, 명칭 정확화 (SorryBench #39); Non-sexual Explicit Content Generation, Self-Harm과 병합 |
+| 6-F-1 | 〃 | Non-sexual Explicit Content Generation | merge | active | 2026-08-07 재매핑 확인 (SorryBench #27) |
+| 6-F-1 | 〃 | Self-Harm | merge | active | 2026-08-07 재매핑 확인 (SorryBench #6) |
 
-**파일럿 범위**: `status = active` 이면서 표에 **굵게 표시한 3개 카테고리(4-A-1, 4-B-1, 4-B-2)**만 이번 파일럿에서 실행. 나머지 direct(10개, active)는 매핑은 확정됐지만 파일럿 이후 본실험 확장 시 순서대로 실행 대상에 포함하면 된다. `6-C-1`은 파일럿 4번째 대상으로 포함할지 팀 결정 대기 중.
+**파일럿 범위**: `status = active` 이면서 표에 **굵게 표시한 3개 카테고리(4-A-1, 4-B-1, 4-B-2)**만 이번 파일럿에서 실행. 나머지 active 카테고리(direct 11개 + merge 3개 = 14개)는 매핑은 확정됐지만 파일럿 이후 본실험 확장 시 순서대로 실행 대상에 포함하면 된다. `6-C-1`은 파일럿 4번째 대상으로 포함할지 팀 결정 대기 중.
 
-**new(16개) 카테고리 처리 방침** [TEAM DECISION NEEDED]: 다음 중 선택:
+**new(12개) 카테고리 처리 방침** [TEAM DECISION NEEDED]: 다음 중 선택:
 - a) Phase 1(정책 추출)만 수행하고 Phase 2는 건너뜀
 - b) 자체 제작 유해 프롬프트를 추가 제작 (출처를 SorryBench 파생과 명확히 구분 표기)
 

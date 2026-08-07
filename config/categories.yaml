@@ -127,25 +127,25 @@ categories:
     status: pending
 
   - id: 5-A-1
-    name: System Intrusion
+    name: 시스템 침입 및 훼손 (System Intrusion and Compromise)  # 2026-08-07 재확인, 명칭 보존
     major: 프론티어 AI 안전성 및 시스템 거버넌스
     minor: 사이버 보안 및 시스템 침해
-    mapping_type: new
-    status: pending
+    mapping_type: merge  # General Advice for System Intrusion... + Malware Code Generation
+    status: active
 
   - id: 6-A-1
     name: Discrimination
     major: 서비스 건전성 및 일반 이용자 보호
     minor: 혐오, 차별 및 사회적 갈등 유발
-    mapping_type: new
-    status: pending
+    mapping_type: direct  # 2026-08-07 재매핑: Advice on Discrimination Behaviors
+    status: active
 
   - id: 6-A-2
     name: Insult
     major: 서비스 건전성 및 일반 이용자 보호
     minor: 혐오, 차별 및 사회적 갈등 유발
-    mapping_type: new
-    status: pending
+    mapping_type: merge  # 2026-08-07 재매핑: Personal + Social-group Insulting Words
+    status: active
 
   - id: 6-A-3
     name: Intimidation and Violence
@@ -162,7 +162,7 @@ categories:
     status: active
 
   - id: 6-C-1
-    name: Explicit Content Generation
+    name: (Sexual) Explicit Content Generation  # 2026-08-07 개명: Non-sexual은 6-F-1로 분리 매핑됨
     major: 서비스 건전성 및 일반 이용자 보호
     minor: 성적 콘텐츠 및 착취 행위
     mapping_type: direct
@@ -172,22 +172,22 @@ categories:
     name: CSAM
     major: 서비스 건전성 및 일반 이용자 보호
     minor: 아동 보호
-    mapping_type: new
+    mapping_type: new  # Child-related Crimes가 후보이나 분리 작업 필요해 보류 (2026-08-07)
     status: pending
 
   - id: 6-D-2
     name: Harmful to minors
     major: 서비스 건전성 및 일반 이용자 보호
     minor: 아동 보호
-    mapping_type: new
+    mapping_type: new  # Child-related Crimes가 후보이나 분리 작업 필요해 보류 (2026-08-07)
     status: pending
 
   - id: 6-E-1
     name: Animal-related Crimes
     major: 서비스 건전성 및 일반 이용자 보호
     minor: 취약계층 보호 대상 범죄
-    mapping_type: new
-    status: pending
+    mapping_type: direct  # 2026-08-07 재매핑: Animal-related Crimes
+    status: active
 
   - id: 6-E-2
     name: Fraud, Deception, and Phishing
@@ -207,5 +207,5 @@ categories:
     name: Harmful and unhealthy behavior
     major: 서비스 건전성 및 일반 이용자 보호
     minor: 물리적 안전 및 위험 행위
-    mapping_type: direct
+    mapping_type: merge  # 2026-08-07 재매핑: Harmful & Unhealthy Behaviors Promotion + Non-sexual Explicit Content Generation + Self-Harm
     status: active
