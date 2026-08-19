@@ -1,4 +1,4 @@
-# 환경변수 / 키
+# 환경변수 / 키 — 이것만 제외한다
 .env
 *.key
 
@@ -8,33 +8,6 @@ __pycache__/
 .venv/
 venv/
 *.egg-info/
-
-# 데이터 (용량이 크고 원본은 다시 받을 수 있으므로 기본적으로 제외)
-data/raw/*
-data/processed/*
-!data/raw/.gitkeep
-!data/processed/.gitkeep
-
-# 결과 (카테고리 26, PII, 명예훼손 등 민감할 수 있는 실제 프롬프트/응답 원문 포함)
-# 하위 폴더뿐 아니라 results/ 바로 아래 파일도 제외한다.
-# 리포트 HTML과 export CSV에도 모델 응답 원문이 들어가므로 같은 기준을 적용한다.
-results/*
-!results/phase1_rules/
-!results/phase2_responses/
-!results/phase3_scores/
-results/phase1_rules/*
-results/phase2_responses/*
-results/phase3_scores/*
-!results/phase1_rules/.gitkeep
-!results/phase2_responses/.gitkeep
-!results/phase3_scores/.gitkeep
-
-# 원 논문 PDF (재배포 라이선스가 불명확하고 용량도 크다. arXiv 링크로 대체)
-docs/*.pdf
-
-# 로그
-logs/*
-!logs/.gitkeep
 
 # OS / 에디터
 .DS_Store
