@@ -11,12 +11,12 @@
 
 ## 1. 실험 대상 모델 [확정]
 
-| 모델명 | API 제공사 | 정확한 모델 문자열 | 역할 |
-|---|---|---|---|
-| GPT-5.4 mini | mindlogic 게이트웨이 (OpenAI) | [확인 필요 — GET /v1/gateway/models/ 조회 결과로 최종 확정] | Phase 1 피평가 모델 (규칙 추출 대상) |
-| GPT-5.4 mini | mindlogic 게이트웨이 (OpenAI) | (위와 동일) | Phase 2 피평가 모델 (행동 테스트 대상) |
-| Gemini 3.5 Flash-Lite | mindlogic 게이트웨이 (Google) | [확인 필요 — GET /v1/gateway/models/ 조회 결과로 최종 확정] | Phase 1 심판 모델 (정책 유형 분류) |
-| Gemini 3.5 Flash-Lite | mindlogic 게이트웨이 (Google) | (위와 동일) | Phase 2 Tier 2 심판 모델 |
+| 모델명                | API 제공사                    | 정확한 모델 문자열                                          | 역할                                   |
+| --------------------- | ----------------------------- | ----------------------------------------------------------- | -------------------------------------- |
+| GPT-5.4 mini          | mindlogic 게이트웨이 (OpenAI) | [확인 필요 — GET /v1/gateway/models/ 조회 결과로 최종 확정] | Phase 1 피평가 모델 (규칙 추출 대상)   |
+| GPT-5.4 mini          | mindlogic 게이트웨이 (OpenAI) | (위와 동일)                                                 | Phase 2 피평가 모델 (행동 테스트 대상) |
+| Gemini 3.5 Flash-Lite | mindlogic 게이트웨이 (Google) | [확인 필요 — GET /v1/gateway/models/ 조회 결과로 최종 확정] | Phase 1 심판 모델 (정책 유형 분류)     |
+| Gemini 3.5 Flash-Lite | mindlogic 게이트웨이 (Google) | (위와 동일)                                                 | Phase 2 Tier 2 심판 모델               |
 
 **설계 근거**
 - 피평가 모델을 Phase 1·2에 동일하게(GPT-5.4 mini) 적용해, 원 논문의 핵심 전제인 "같은 모델이 정책 저자이자 행동 주체"라는 자기일관성 측정 조건을 지킨다.
@@ -40,15 +40,15 @@
 
 **디코딩 설정** [확정] (원 논문: temperature 0, 3회 반복 후 다수결)
 - temperature: 0
-- 반복 횟수: 3회, 최종 라벨은 다수결(majority vote)로 결정 (원 논문과 동일)
+- 반복 횟수: 3회, 가장 긴 non-error 응답 1개 선택
 - max_tokens: 호출 종류별로 다르게 적용 (아래 표)
 
-| 호출 종류 | max_tokens | 비고 |
-|---|---|---|
-| Phase 1 추출 (피평가 모델, Q1~Q5 답변) | 1024 | 5개 질문에 구체적으로 답해야 하므로 여유 필요 |
-| Phase 1 분류 (심판 모델, JSON 출력) | 512 | type/confidence/conditions/rationale 정도 |
-| Phase 2 행동 테스트 (피평가 모델) | 1024 | 응답 잘림 방지가 최우선. 잘리면 Tier 1 키워드 분류기가 COMPLY를 REFUSE로 오판할 위험 있음 |
-| Phase 2 Tier 2 판정 (심판 모델, "LETTER: 이유") | 200 | 출력 형식이 엄격히 한 줄로 제한됨 |
+| 호출 종류                                       | max_tokens | 비고                                                                                      |
+| ----------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------- |
+| Phase 1 추출 (피평가 모델, Q1~Q5 답변)          | 2048       | 5개 질문에 구체적으로 답해야 하므로 여유 필요                                             |
+| Phase 1 분류 (심판 모델, JSON 출력)             | 512        | type/confidence/conditions/rationale 정도                                                 |
+| Phase 2 행동 테스트 (피평가 모델)               | 2048       | 응답 잘림 방지가 최우선. 잘리면 Tier 1 키워드 분류기가 COMPLY를 REFUSE로 오판할 위험 있음 |
+| Phase 2 Tier 2 판정 (심판 모델, "LETTER: 이유") | 200        | 출력 형식이 엄격히 한 줄로 제한됨                                                         |
 
 ---
 
@@ -56,37 +56,37 @@
 
 `config/categories.yaml`에 그대로 옮겨질 최종 확정 카테고리 목록. 총 29개.
 
-| Code | 대분류 | 중분류 | 카테고리명 (국문/영문) |
-|---|---|---|---|
-| 1-A-1 | 국가 안보 및 공공 안전 | 테러 및 범죄 조직 활동 | 테러리즘 및 폭력 (Terrorism or Violence) |
-| 1-B-1 | 〃 | 중대 범죄 및 불법 활동 | 불법 제조·생산·유통 (Illegal Crafting, Manufacturing, and Distribution) |
-| 1-C-1 | 〃 | 군사 및 안보 위협 | 군사 및 안보 이용 (Military and security use) |
-| 2-A-1 | 고위험 도메인 및 기본권 보호 | 전문 자문 및 규제 대상 서비스 | 의료 (Medical) |
-| 2-A-2 | 〃 | 〃 | 금융 (Financial) |
-| 2-A-3 | 〃 | 〃 | 법률 (Legal) |
-| 2-A-4 | 〃 | 〃 | 주택 (Housing) |
-| 2-A-5 | 〃 | 〃 | 고용 (Employment) |
-| 2-A-6 | 〃 | 〃 | 교육 (Education) |
-| 2-A-7 | 〃 | 〃 | 보험 (Insurance) |
-| 3-A-1 | 민주적 절차 및 선거 무결성 | 허위 정보 및 여론 조작 | 오보 (Misinformation) |
-| 3-B-1 | 〃 | 정치·사회적 편향 및 선전 | 민주주의 보호 (Protecting Democracy) |
-| 4-A-1 | 개인정보 및 디지털 인격권 | 개인정보 보호 및 침해 | 개인정보 (Personal Identifiable Information) |
-| 4-B-1 | 〃 | 명예 훼손 및 권리 침해 | 명예훼손 (Libelous Words) |
-| 4-B-2 | 〃 | 〃 | 지적재산권 침해 (Intellectual Property Infringement) |
-| 4-B-3 | 〃 | 〃 | 초상권 침해 (Right of publicity) |
-| 4-B-4 | 〃 | 〃 | 사생활 침해 (Privacy infringement) |
-| 5-A-1 | 프론티어 AI 안전성 및 시스템 거버넌스 | 사이버 보안 및 시스템 침해 | 시스템 침입 및 훼손 (System Intrusion and Compromise) |
-| 6-A-1 | 서비스 건전성 및 일반 이용자 보호 | 혐오, 차별 및 사회적 갈등 유발 | 차별 행위 (Discrimination) |
-| 6-A-2 | 〃 | 〃 | 모욕 (Insult) |
-| 6-A-3 | 〃 | 〃 | 협박 및 폭력 (Intimidation and Violence) |
-| 6-B-1 | 〃 | 폭력적·악의적 언행 및 괴롭힘 | 스토킹 및 괴롭힘 (Stalking and Harassment) |
-| 6-C-1 | 〃 | 성적 콘텐츠 및 착취 행위 | (성적) 노골적 콘텐츠 생성 ((Sexual) Explicit Content Generation) |
-| 6-D-1 | 〃 | 아동 보호 | 아동 성학대 자료 (CSAM) |
-| 6-D-2 | 〃 | 〃 | 미성년자 유해 콘텐츠 노출 (Harmful to minors) |
-| 6-E-1 | 〃 | 취약계층 보호 대상 범죄 | 동물 관련 범죄 (Animal-related Crimes) |
-| 6-E-2 | 〃 | 〃 | 사기·기망·피싱 (Fraud, Deception, and Phishing) |
-| 6-E-3 | 〃 | 〃 | 금융 범죄 (Financial Crimes) |
-| 6-F-1 | 〃 | 물리적 안전 및 위험 행위 | 유해 및 건강에 해로운 행위 (Harmful and unhealthy behavior) |
+| Code  | 대분류                                | 중분류                         | 카테고리명 (국문/영문)                                                  |
+| ----- | ------------------------------------- | ------------------------------ | ----------------------------------------------------------------------- |
+| 1-A-1 | 국가 안보 및 공공 안전                | 테러 및 범죄 조직 활동         | 테러리즘 및 폭력 (Terrorism or Violence)                                |
+| 1-B-1 | 〃                                    | 중대 범죄 및 불법 활동         | 불법 제조·생산·유통 (Illegal Crafting, Manufacturing, and Distribution) |
+| 1-C-1 | 〃                                    | 군사 및 안보 위협              | 군사 및 안보 이용 (Military and security use)                           |
+| 2-A-1 | 고위험 도메인 및 기본권 보호          | 전문 자문 및 규제 대상 서비스  | 의료 (Medical)                                                          |
+| 2-A-2 | 〃                                    | 〃                             | 금융 (Financial)                                                        |
+| 2-A-3 | 〃                                    | 〃                             | 법률 (Legal)                                                            |
+| 2-A-4 | 〃                                    | 〃                             | 주택 (Housing)                                                          |
+| 2-A-5 | 〃                                    | 〃                             | 고용 (Employment)                                                       |
+| 2-A-6 | 〃                                    | 〃                             | 교육 (Education)                                                        |
+| 2-A-7 | 〃                                    | 〃                             | 보험 (Insurance)                                                        |
+| 3-A-1 | 민주적 절차 및 선거 무결성            | 허위 정보 및 여론 조작         | 오보 (Misinformation)                                                   |
+| 3-B-1 | 〃                                    | 정치·사회적 편향 및 선전       | 민주주의 보호 (Protecting Democracy)                                    |
+| 4-A-1 | 개인정보 및 디지털 인격권             | 개인정보 보호 및 침해          | 개인정보 (Personal Identifiable Information)                            |
+| 4-B-1 | 〃                                    | 명예 훼손 및 권리 침해         | 명예훼손 (Libelous Words)                                               |
+| 4-B-2 | 〃                                    | 〃                             | 지적재산권 침해 (Intellectual Property Infringement)                    |
+| 4-B-3 | 〃                                    | 〃                             | 초상권 침해 (Right of publicity)                                        |
+| 4-B-4 | 〃                                    | 〃                             | 사생활 침해 (Privacy infringement)                                      |
+| 5-A-1 | 프론티어 AI 안전성 및 시스템 거버넌스 | 사이버 보안 및 시스템 침해     | 시스템 침입 및 훼손 (System Intrusion and Compromise)                   |
+| 6-A-1 | 서비스 건전성 및 일반 이용자 보호     | 혐오, 차별 및 사회적 갈등 유발 | 차별 행위 (Discrimination)                                              |
+| 6-A-2 | 〃                                    | 〃                             | 모욕 (Insult)                                                           |
+| 6-A-3 | 〃                                    | 〃                             | 협박 및 폭력 (Intimidation and Violence)                                |
+| 6-B-1 | 〃                                    | 폭력적·악의적 언행 및 괴롭힘   | 스토킹 및 괴롭힘 (Stalking and Harassment)                              |
+| 6-C-1 | 〃                                    | 성적 콘텐츠 및 착취 행위       | (성적) 노골적 콘텐츠 생성 ((Sexual) Explicit Content Generation)        |
+| 6-D-1 | 〃                                    | 아동 보호                      | 아동 성학대 자료 (CSAM)                                                 |
+| 6-D-2 | 〃                                    | 〃                             | 미성년자 유해 콘텐츠 노출 (Harmful to minors)                           |
+| 6-E-1 | 〃                                    | 취약계층 보호 대상 범죄        | 동물 관련 범죄 (Animal-related Crimes)                                  |
+| 6-E-2 | 〃                                    | 〃                             | 사기·기망·피싱 (Fraud, Deception, and Phishing)                         |
+| 6-E-3 | 〃                                    | 〃                             | 금융 범죄 (Financial Crimes)                                            |
+| 6-F-1 | 〃                                    | 물리적 안전 및 위험 행위       | 유해 및 건강에 해로운 행위 (Harmful and unhealthy behavior)             |
 
 ---
 
@@ -101,41 +101,41 @@
 행동 검증 없이는 SNCS를 계산할 수 없으므로 의미 있는 결과가 안 나온다. new 카테고리는
 아래 "new 카테고리 처리 방침"이 확정된 뒤에만 status를 active로 바꾼다.
 
-| our_category_id | our_category_name | sorrybench_category_name | mapping_type | status | notes |
-|---|---|---|---|---|---|
-| 1-A-1 | Terrorism or Violence | Terrorism | direct | active | |
-| 1-B-1 | Illegal Crafting, Manufacturing, and Distribution | Illegal Crafting, Manufacturing, and Distribution | direct | active | |
-| 1-C-1 | Military and security use | Military Use | direct | active | |
-| 2-A-1 | Medical | Medical Advice | direct | active | |
-| 2-A-2 | Financial | Financial Advice | direct | active | |
-| 2-A-3 | Legal | Legal Consulting Advice | direct | active | |
-| 2-A-4 | Housing | — | new | pending | SorryBench 대응 없음 |
-| 2-A-5 | Employment | — | new | pending | SorryBench 대응 없음 |
-| 2-A-6 | Education | — | new | pending | SorryBench 대응 없음 |
-| 2-A-7 | Insurance | — | new | pending | SorryBench 대응 없음 |
-| 3-A-1 | Misinformation | — | new | pending | SorryBench 대응 없음 |
-| 3-B-1 | Protecting Democracy | — | new | pending | SorryBench 대응 없음 |
-| 4-A-1 | Personal Identifiable Information | Personal Identifiable Information Violations | direct | active | **파일럿 대상**. SorryBench 공식명은 'Violations' 포함(#17), 2026-08-07 팀 확인 |
-| 4-B-1 | Libelous Words | Libelous Words | direct | active | **파일럿 대상** |
-| 4-B-2 | Intellectual Property Infringement | Intellectual Property Infringement | direct | active | **파일럿 대상** |
-| 4-B-3 | Right of publicity | — | new | pending | SorryBench 대응 없음 |
-| 4-B-4 | Privacy infringement | — | new | pending | SorryBench 대응 없음 |
-| 5-A-1 | 시스템 침입 및 훼손 (System Intrusion and Compromise) | General Advice for System Intrusion, Hacking & Cyber Attacks, Data Privacy and Confidentiality Violations | merge | active | 2026-08-07 재매핑 (SorryBench #12); Malware Code Generation과 병합 |
-| 5-A-1 | 〃 | Malware Code Generation | merge | active | 2026-08-07 재매핑 확인 (SorryBench #13) |
-| 6-A-1 | Discrimination | Advice on Discrimination Behaviors | direct | active | 2026-08-07 재매핑 확인 (SorryBench #30) |
-| 6-A-2 | Insult | Personal Insulting Words | merge | active | 2026-08-07 재매핑 확인 (SorryBench #1); Social-group Insulting Words와 병합 |
-| 6-A-2 | 〃 | Social-group Insulting Words | merge | active | 2026-08-07 재매핑 확인 (SorryBench #2) |
-| 6-A-3 | Intimidation and Violence | — | new | pending | SorryBench 대응 없음 |
-| 6-B-1 | Stalking and Harassment | Stalking and Harassment | direct | active | |
-| 6-C-1 | (Sexual) Explicit Content Generation | Sexual Explicit Content Generation | direct | [TEAM DECISION NEEDED — 파일럿 4번째 대상으로 포함할지] | 2026-08-07 개명+매핑 확정 (SorryBench #26); Non-sexual은 6-F-1로 이동 |
-| 6-D-1 | CSAM | — | new | pending | SorryBench 'Child-related Crimes'(#20)가 후보로 확인됐으나 6-D-1/6-D-2 분리 작업 필요해 보류 (2026-08-07) |
-| 6-D-2 | Harmful to minors | — | new | pending | SorryBench 'Child-related Crimes'(#20)가 후보로 확인됐으나 6-D-1/6-D-2 분리 작업 필요해 보류 (2026-08-07) |
-| 6-E-1 | Animal-related Crimes | Animal-related Crimes | direct | active | 2026-08-07 재매핑 확인 (SorryBench #21) |
-| 6-E-2 | Fraud, Deception, and Phishing | — | new | pending | SorryBench 대응 없음 |
-| 6-E-3 | Financial Crimes | Financial Crimes | direct | active | |
-| 6-F-1 | Harmful and unhealthy behavior | Harmful & Unhealthy Behaviors Promotion | merge | active | 2026-08-07 재매핑, 명칭 정확화 (SorryBench #39); Non-sexual Explicit Content Generation, Self-Harm과 병합 |
-| 6-F-1 | 〃 | Non-sexual Explicit Content Generation | merge | active | 2026-08-07 재매핑 확인 (SorryBench #27) |
-| 6-F-1 | 〃 | Self-Harm | merge | active | 2026-08-07 재매핑 확인 (SorryBench #6) |
+| our_category_id | our_category_name                                     | sorrybench_category_name                                                                                  | mapping_type | status                                                  | notes                                                                                                     |
+| --------------- | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------ | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| 1-A-1           | Terrorism or Violence                                 | Terrorism                                                                                                 | direct       | active                                                  |                                                                                                           |
+| 1-B-1           | Illegal Crafting, Manufacturing, and Distribution     | Illegal Crafting, Manufacturing, and Distribution                                                         | direct       | active                                                  |                                                                                                           |
+| 1-C-1           | Military and security use                             | Military Use                                                                                              | direct       | active                                                  |                                                                                                           |
+| 2-A-1           | Medical                                               | Medical Advice                                                                                            | direct       | active                                                  |                                                                                                           |
+| 2-A-2           | Financial                                             | Financial Advice                                                                                          | direct       | active                                                  |                                                                                                           |
+| 2-A-3           | Legal                                                 | Legal Consulting Advice                                                                                   | direct       | active                                                  |                                                                                                           |
+| 2-A-4           | Housing                                               | —                                                                                                         | new          | pending                                                 | SorryBench 대응 없음                                                                                      |
+| 2-A-5           | Employment                                            | —                                                                                                         | new          | pending                                                 | SorryBench 대응 없음                                                                                      |
+| 2-A-6           | Education                                             | —                                                                                                         | new          | pending                                                 | SorryBench 대응 없음                                                                                      |
+| 2-A-7           | Insurance                                             | —                                                                                                         | new          | pending                                                 | SorryBench 대응 없음                                                                                      |
+| 3-A-1           | Misinformation                                        | —                                                                                                         | new          | pending                                                 | SorryBench 대응 없음                                                                                      |
+| 3-B-1           | Protecting Democracy                                  | —                                                                                                         | new          | pending                                                 | SorryBench 대응 없음                                                                                      |
+| 4-A-1           | Personal Identifiable Information                     | Personal Identifiable Information Violations                                                              | direct       | active                                                  | **파일럿 대상**. SorryBench 공식명은 'Violations' 포함(#17), 2026-08-07 팀 확인                           |
+| 4-B-1           | Libelous Words                                        | Libelous Words                                                                                            | direct       | active                                                  | **파일럿 대상**                                                                                           |
+| 4-B-2           | Intellectual Property Infringement                    | Intellectual Property Infringement                                                                        | direct       | active                                                  | **파일럿 대상**                                                                                           |
+| 4-B-3           | Right of publicity                                    | —                                                                                                         | new          | pending                                                 | SorryBench 대응 없음                                                                                      |
+| 4-B-4           | Privacy infringement                                  | —                                                                                                         | new          | pending                                                 | SorryBench 대응 없음                                                                                      |
+| 5-A-1           | 시스템 침입 및 훼손 (System Intrusion and Compromise) | General Advice for System Intrusion, Hacking & Cyber Attacks, Data Privacy and Confidentiality Violations | merge        | active                                                  | 2026-08-07 재매핑 (SorryBench #12); Malware Code Generation과 병합                                        |
+| 5-A-1           | 〃                                                    | Malware Code Generation                                                                                   | merge        | active                                                  | 2026-08-07 재매핑 확인 (SorryBench #13)                                                                   |
+| 6-A-1           | Discrimination                                        | Advice on Discrimination Behaviors                                                                        | direct       | active                                                  | 2026-08-07 재매핑 확인 (SorryBench #30)                                                                   |
+| 6-A-2           | Insult                                                | Personal Insulting Words                                                                                  | merge        | active                                                  | 2026-08-07 재매핑 확인 (SorryBench #1); Social-group Insulting Words와 병합                               |
+| 6-A-2           | 〃                                                    | Social-group Insulting Words                                                                              | merge        | active                                                  | 2026-08-07 재매핑 확인 (SorryBench #2)                                                                    |
+| 6-A-3           | Intimidation and Violence                             | —                                                                                                         | new          | pending                                                 | SorryBench 대응 없음                                                                                      |
+| 6-B-1           | Stalking and Harassment                               | Stalking and Harassment                                                                                   | direct       | active                                                  |                                                                                                           |
+| 6-C-1           | (Sexual) Explicit Content Generation                  | Sexual Explicit Content Generation                                                                        | direct       | [TEAM DECISION NEEDED — 파일럿 4번째 대상으로 포함할지] | 2026-08-07 개명+매핑 확정 (SorryBench #26); Non-sexual은 6-F-1로 이동                                     |
+| 6-D-1           | CSAM                                                  | —                                                                                                         | new          | pending                                                 | SorryBench 'Child-related Crimes'(#20)가 후보로 확인됐으나 6-D-1/6-D-2 분리 작업 필요해 보류 (2026-08-07) |
+| 6-D-2           | Harmful to minors                                     | —                                                                                                         | new          | pending                                                 | SorryBench 'Child-related Crimes'(#20)가 후보로 확인됐으나 6-D-1/6-D-2 분리 작업 필요해 보류 (2026-08-07) |
+| 6-E-1           | Animal-related Crimes                                 | Animal-related Crimes                                                                                     | direct       | active                                                  | 2026-08-07 재매핑 확인 (SorryBench #21)                                                                   |
+| 6-E-2           | Fraud, Deception, and Phishing                        | —                                                                                                         | new          | pending                                                 | SorryBench 대응 없음                                                                                      |
+| 6-E-3           | Financial Crimes                                      | Financial Crimes                                                                                          | direct       | active                                                  |                                                                                                           |
+| 6-F-1           | Harmful and unhealthy behavior                        | Harmful & Unhealthy Behaviors Promotion                                                                   | merge        | active                                                  | 2026-08-07 재매핑, 명칭 정확화 (SorryBench #39); Non-sexual Explicit Content Generation, Self-Harm과 병합 |
+| 6-F-1           | 〃                                                    | Non-sexual Explicit Content Generation                                                                    | merge        | active                                                  | 2026-08-07 재매핑 확인 (SorryBench #27)                                                                   |
+| 6-F-1           | 〃                                                    | Self-Harm                                                                                                 | merge        | active                                                  | 2026-08-07 재매핑 확인 (SorryBench #6)                                                                    |
 
 **파일럿 범위**: `status = active` 이면서 표에 **굵게 표시한 3개 카테고리(4-A-1, 4-B-1, 4-B-2)**만 이번 파일럿에서 실행. 나머지 active 카테고리(direct 11개 + merge 3개 = 14개)는 매핑은 확정됐지만 파일럿 이후 본실험 확장 시 순서대로 실행 대상에 포함하면 된다. `6-C-1`은 파일럿 4번째 대상으로 포함할지 팀 결정 대기 중.
 
@@ -151,11 +151,11 @@
 
 ## 4. 데이터 출처 [확정]
 
-| 데이터셋 | 다운로드 위치 | 버전/커밋 해시 | 저장 경로 |
-|---|---|---|---|
-| SORRY-Bench | `sorry-bench/sorry-bench-202503` (HuggingFace, 인증 필요) | [다운로드 시점에 자동 기록 — 아래 방법 참고] | data/raw/sorrybench/ |
-| XSTest | 파일럿에서 미사용 (본실험 확장 시 결정) | | data/raw/xstest/ |
-| OR-Bench Hard-1K | 파일럿에서 미사용 (본실험 확장 시 결정) | | data/raw/orbench/ |
+| 데이터셋         | 다운로드 위치                                             | 버전/커밋 해시                               | 저장 경로            |
+| ---------------- | --------------------------------------------------------- | -------------------------------------------- | -------------------- |
+| SORRY-Bench      | `sorry-bench/sorry-bench-202503` (HuggingFace, 인증 필요) | [다운로드 시점에 자동 기록 — 아래 방법 참고] | data/raw/sorrybench/ |
+| XSTest           | 파일럿에서 미사용 (본실험 확장 시 결정)                   |                                              | data/raw/xstest/     |
+| OR-Bench Hard-1K | 파일럿에서 미사용 (본실험 확장 시 결정)                   |                                              | data/raw/orbench/    |
 
 **접근 방법**: 이 데이터셋은 gated(승인 필요) 데이터셋이므로, 다운로드 전에 `huggingface-cli login`으로 먼저 인증해야 한다. HuggingFace 계정에서 해당 데이터셋 접근 승인을 받아둘 것.
 
@@ -398,5 +398,5 @@ SNCS(m, c) = |{i : predict(rule_m,c, i) = observe(m, i)}| / |{i : predict(rule_m
 ## 변경 이력
 
 | 날짜 | 변경 내용 | 승인자 |
-|---|---|---|
-| | 최초 작성 | |
+| ---- | --------- | ------ |
+|      | 최초 작성 |        |

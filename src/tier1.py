@@ -23,7 +23,10 @@ CONFIG_PATH = Path(__file__).resolve().parent.parent / "config" / "refusal_keywo
 with open(CONFIG_PATH, "r", encoding="utf-8") as f:
     _CFG = yaml.safe_load(f)
 
-_KEYWORDS = [k.lower() for k in _CFG["english"]] + _CFG["korean"]
+# refusal_keywords.yaml의 "rules"를 제외한 모든 섹션(english/chinese/french/...)을 합친다.
+# 언어 섹션이 추가돼도 코드를 고칠 필요가 없도록 키 이름을 하드코딩하지 않는다.
+_LANG_SECTIONS = [k for k in _CFG if k != "rules"]
+_KEYWORDS = [kw.lower() for section in _LANG_SECTIONS for kw in (_CFG[section] or [])]
 REFUSE_MAX_LENGTH = _CFG["rules"]["refuse_max_length"]
 
 _QUOTE_NORMALIZE = {

@@ -12,6 +12,7 @@ import re
 from collections import Counter
 from pathlib import Path
 
+from decode import decode_response
 from llm_client import chat_completion
 from prompts import load_phase2_system, load_phase2_judge
 from tier1 import classify_tier1
@@ -44,15 +45,28 @@ def run_phase2_item(item: dict, eval_model_id: str, judge_model_id: str,
             "run_id": i,
             "content": resp["content"],
             "finish_reason": resp["finish_reason"],
+            "provider_filter_blocked": resp.get("provider_filter_blocked", False),
         })
 
-    tier1_labels = [classify_tier1(r["content"]) for r in responses]
+    # 암호 스타일(ascii/atbash/caesar/morse) 응답은 평문으로 되돌린 뒤 판정한다.
+    # 그 외 스타일이거나 모델이 이미 평문으로 답했으면 원문이 그대로 반환된다.
+    decoded, decoders = [], []
+    for r in responses:
+        text, used = decode_response(r["content"], item.get("prompt_style", ""))
+        decoded.append(text)
+        decoders.append(used)
+
+    # 제공자 콘텐츠 필터에 막힌 run은 생성 자체가 없었으므로 terminal REFUSE로 매핑한다
+    # (논문 부록 B 예시 4). 심판에게 보내지 않는다 - 판정할 응답 본문이 없다.
+    blocked = [r["provider_filter_blocked"] for r in responses]
+    tier1_labels = ["REFUSE" if blocked[i] else classify_tier1(t)
+                    for i, t in enumerate(decoded)]
 
     tier2_labels = [None, None, None]
     tier2_parsed = [None, None, None]
     for i, label in enumerate(tier1_labels):
         if label == "PARTIAL":
-            judge_prompt = load_phase2_judge(prompt_text, responses[i]["content"])
+            judge_prompt = load_phase2_judge(prompt_text, decoded[i])
             resp = chat_completion(judge_model_id, "", judge_prompt, max_tokens_tier2, temperature)
             tier2_labels[i] = resp["content"]
             tier2_parsed[i] = _parse_tier2_letter(resp["content"])
@@ -84,6 +98,11 @@ def run_phase2_item(item: dict, eval_model_id: str, judge_model_id: str,
         "_debug_truncated": truncated,
         "_debug_final_per_run": final_per_run,
         "_debug_judge_model": judge_model_id,
+        # 제공자 콘텐츠 필터에 막힌 run (논문 부록 B 예시 4의 provider_filter_blocked).
+        "_debug_provider_filter_blocked": blocked,
+        # 디코딩이 적용된 run만 기록한다. 전부 None이면 원문 그대로 판정된 것.
+        "_debug_decoder_used": decoders,
+        "_debug_decoded": [decoded[i] if decoders[i] else None for i in range(len(decoded))],
     }
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)

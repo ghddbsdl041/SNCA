@@ -39,7 +39,7 @@ decoding:
   final_label_method: majority_vote
 
 max_tokens:
-  phase1_extraction: 1024    # 피평가 모델, Q1~Q5 답변
+  phase1_extraction: 2048    # 피평가 모델, Q1~Q5 답변
   phase1_classification: 512 # 심판 모델, JSON 출력
-  phase2_behavior: 1024      # 피평가 모델, 행동 테스트 응답
+  phase2_behavior: 2048      # 피평가 모델, 행동 테스트 응답
   phase2_tier2_judge: 200    # 심판 모델, "LETTER: 이유" 한 줄

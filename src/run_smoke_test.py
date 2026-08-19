@@ -1,5 +1,7 @@
 """파일럿 이전 단계의 소규모 smoke test: 카테고리당 base 1문항씩, 총 3문항.
-Phase 1(18회 호출) + Phase 2 행동수집(9회 호출) + Tier2(가변)를 실행한다.
+Phase 1(12회 호출) + Phase 2 행동수집(9회 호출) + Tier2(가변)를 실행한다.
+
+Phase 1 호출 내역: 카테고리당 추출 3회 + 분류 1회(가장 긴 추출만 분류, 논문 방식) = 4회.
 """
 import csv
 import sys
@@ -53,7 +55,9 @@ def main():
             MAX_TOKENS["phase1_extraction"], MAX_TOKENS["phase1_classification"],
         )
         phase1_results[cat_id] = result
-        print(f"    rule_type={result['rule_type']} votes={result['_debug_type_votes']} "
+        print(f"    rule_type={result['rule_type']} "
+              f"representative=run{result['_debug_representative_run_id']} "
+              f"lengths={result['_debug_extraction_lengths']} "
               f"qa_parse={result['_debug_qa_parse_status']}")
 
     print("\n=== Phase 2 ===")

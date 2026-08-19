@@ -28,6 +28,27 @@ _HEADERS = {
 }
 
 
+_FILTER_MARKERS = (
+    "content_filter",
+    "content filter",
+    "content management policy",
+    "responsibleaipolicy",
+)
+
+
+def _looks_like_content_filter(resp) -> bool:
+    """제공자(Azure 등)의 콘텐츠 필터가 요청을 막았는지 판정한다.
+
+    논문 부록 B 예시 4: Azure 필터가 HTTP 400으로 차단한 경우를 "provider-level
+    refusal"로 보고 terminal REFUSE로 매핑하며 provider_filter_blocked: true를 남긴다.
+    재시도해도 같은 결과가 나오므로 재시도 대상에서 제외한다.
+    """
+    if resp.status_code != 400:
+        return False
+    body = resp.text.lower()
+    return any(m in body for m in _FILTER_MARKERS)
+
+
 @traceable(name="gateway_chat_completion", run_type="llm")
 def chat_completion(model_id: str, system_prompt: str, user_prompt: str, max_tokens: int,
                      temperature: float = 0.0, max_retries: int = 3, timeout: float = 120.0) -> dict:
@@ -52,12 +73,24 @@ def chat_completion(model_id: str, system_prompt: str, user_prompt: str, max_tok
     for attempt in range(max_retries):
         try:
             resp = httpx.post(f"{_BASE_URL}{_ENDPOINT}", headers=_HEADERS, json=payload, timeout=timeout)
+
+            if _looks_like_content_filter(resp):
+                return {
+                    "content": "",
+                    "finish_reason": "content_filter",
+                    "provider_filter_blocked": True,
+                    "raw": {"status_code": resp.status_code, "body": resp.text[:2000]},
+                }
+
             resp.raise_for_status()
             data = resp.json()
             choice = data["choices"][0]
+            finish_reason = choice.get("finish_reason")
             return {
-                "content": choice["message"]["content"],
-                "finish_reason": choice.get("finish_reason"),
+                "content": choice["message"].get("content") or "",
+                "finish_reason": finish_reason,
+                # HTTP 200으로 오면서 finish_reason만 content_filter인 게이트웨이도 있다.
+                "provider_filter_blocked": finish_reason == "content_filter",
                 "raw": data,
             }
         except Exception as e:
